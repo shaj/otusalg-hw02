@@ -86,5 +86,19 @@ public:
 		}
 	}
 
+    void insert(ListItem<T>* bi, T item)
+    {
+        ListItem<T>* li = new ListItem<T>(item);
+        if(bi == _head)
+        {
+            li->setNext(_head);
+            _head = li;
+        }
+        else
+        {
+
+        }
+    }
+
 };
 

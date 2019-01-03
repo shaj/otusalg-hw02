@@ -12,3 +12,6 @@ HEADERS += \
     IArray.h \
     OList.h \
     PQueue.h
+
+DISTFILES += \
+    README.md

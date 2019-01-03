@@ -41,7 +41,6 @@ public:
 };
 
 
-#pragma once
 template<class T> class PQueue
 {
 private:
@@ -56,31 +55,65 @@ public:
 	{
     }
 
+
+
+
     void enqueue(int priority, T item)
     {
         auto pl = _list.head();
         if(pl == nullptr)
-        {
+        { // Пустая очередь
             _list.add(PQueue(priority));
             _list.head()->getList().add(item);
         }
         else
         {
             if(pl->get().getPriority() > priority)
-            { //
-
+            { // Приоритет первого элемента больше вставляемого
+                // Вставка очереди перед первым элементом
+                pl->push_front(PQueue(priority));
+                pl->getList().add(item);
             }
-            while(1)
-            {
-                if(pl->get().getPriority() == priority)
+            else
+            { // Поиск места среди приоритетов
+                auto pln = pl->next();
+                if(pln == nullptr)
                 {
-                    pl->get().getList()->add(item);
-                    break;
+                    pl->add(PQueue(priority));
+                    pl->head()->getList().add(item);
                 }
-                if()
+                else
+                {
+                    while(1)
+                    {
+                        if(pln == nullptr)
+                        {
+                            pl->add(PQueue(priority));
+                            pl->head()->getList().add(item);
+                            break;
+                        }
+                        else if(pln->get().getPriority() == priority)
+                        { // Приоритет очередного списка равен вставляемому
+                            pln->get().getList()->add(item);
+                            break;
+                        }
+                        else if(pln->get().getPriority() > priority)
+                        {
+                            // Вставка очереди перед текущим списком
+                            pl->add(PQueue(priority));
+                            pl->head()->getList().add(item);
+                            break;
+                        }
+                        pl = pln;
+                        pln = pl->next();
+                    }
+                }
             }
         }
     }
+
+
+
 
     T dequeue()
     {
