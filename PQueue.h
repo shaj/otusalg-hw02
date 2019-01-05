@@ -52,9 +52,10 @@ class PQueue
 {
 private:
     OList<PQueueItem<T>> _list;
+    int _size;
 
 public:
-    PQueue()
+    PQueue() : _size(0)
 	{
     }
 
@@ -119,8 +120,29 @@ public:
                 }
             }
         }
+        _size++;
     }
 
+
+    T dequeue()
+    {
+        T retval;
+        if(_list.head() == nullptr)
+            throw std::range_error("Empty queue");
+        retval = _list.head()->get().getList().pop_front();
+        if(_list.head()->get().getList().size() == 0)
+        {
+            _list.pop_front();
+        }
+        _size--;
+        return  retval;
+    }
+
+
+    int size()
+    {
+        return _size;
+    }
 
     void debugPrint()
     {
@@ -141,16 +163,5 @@ public:
     }
 
 
-    T dequeue()
-    {
-        T retval;
-        if(_list.head() == nullptr) return -1;  // Здесь, по видимому, должно быть исключение...
-        retval = _list.head()->get().getList().pop_front();
-        if(_list.head()->get().getList().size() == 0)
-        {
-            _list.pop_front();
-        }
-        return  retval;
-    }
 };
 

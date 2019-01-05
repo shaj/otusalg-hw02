@@ -11,16 +11,22 @@ for (int i = 0; i < 10; i++)
 
 #pragma once
 
+#include <iostream>
 #include <cstddef>
 #include <stdexcept>
+#include <tuple>
 #include "BArray.h"
 #include "OList.h"
 
 
-template <class T, size_t BLKCNT=100, size_t BLKSIZE=100>
+template <class T, size_t BLKCNT=10, size_t BLKSIZE=10>
 class IArray
 {
 private:
+
+    static constexpr auto _opt_column = BLKSIZE * 0.6;
+
+    std::size_t _size;
     BArray<BArray<T, BLKSIZE>, BLKCNT> _data;
 
 //    void relocate(int newsize, int index)
@@ -40,8 +46,35 @@ private:
 //        _size = newsize;
 //    }
 
+    std::tuple<std::size_t, std::size_t> get_cell(std::size_t idx) const
+    {
+        if(idx > (BLKSIZE * BLKCNT))
+        {
+            throw std::range_error("Out of index in IArray");
+        }
+        if(idx > (_size + 1))
+        {
+            std::cout << "IArray size: " << _size << std::endl;
+            throw std::range_error("Out of index in IArray");
+        }
+
+        std::size_t r = 0;
+        std::size_t c = 0;
+        for(std::size_t i=0; i<BLKCNT; i++)
+        {
+            c = _data.get(i).size();
+            if((r + c) >= idx)
+            {
+                c = _data.get(i).size() - (idx - r);
+                break;
+            }
+            r = r + c;
+        }
+        return std::make_tuple(r, c);
+    }
+
 public:
-    IArray()
+    IArray() : _size(0)
     {
     }
 
@@ -49,64 +82,67 @@ public:
     {
     }
 
-    T get(int index)
+    T &get(std::size_t index) const
     {
-        if(index > (BLKSIZE * BLKCNT))
-        {
-            throw std::range_error("Out of index in IArray");
-        }
+        std::size_t r;
+        std::size_t c;
+        std::tie(r, c) = get_cell(index);
+        return _data.get(r).get(c);
+    }
 
-        T retval;
-        int cnt = 0;
-        int bs;
-        for(int i=0; i<BLKCNT; i++)
+
+    void set(std::size_t index, const T &val)
+    {
+        std::size_t r;
+        std::size_t c;
+        std::tie(r, c) = get_cell(index);
+        _data.get(r).set(c, val);
+    }
+
+
+    void add(const T &val)
+    {
+        if(_size == 0)
         {
-            bs = _data.get(i).size();
-            if((cnt + bs) > index)
+            _data.add(BArray<T, BLKSIZE>());
+            _data.get(0).add(val);
+        }
+        else
+        {
+            std::size_t r;
+            std::size_t c;
+            std::tie(r, c) = get_cell(_size - 1);
+            if(c < _opt_column)
             {
-                retval = _data.get(i).get(index - cnt);
-                cnt += bs;
-                break;
+                _data.get(r).add(val);
             }
-            cnt += bs;
-        }
-
-        if(cnt < index)
-        {
-            throw std::range_error("Out of index in IArray");
-        }
-        return retval;
-    }
-
-    void insert(int index, T element)
-    {
-        if(index > (BLKSIZE * BLKCNT))
-        {
-            throw std::range_error("Out of index in IArray");
-        }
-
-        int cnt = 0;
-        int bs;
-        for(int i=0; i<BLKCNT; i++)
-        {
-            bs = _data.get(i).size();
-            if((cnt + bs) > index)
+            else
             {
-                // Нашли блок, в который нужно писать
-                cnt += bs;
-                break;
+                _data.add(BArray<T, BLKSIZE>());
+                _data.get(r + 1).add(val);
             }
-            cnt += bs;
         }
-
+        _size++;
     }
 
-    void set(int index, T element)
+
+    void insert(std::size_t index, const T &val)
     {
-        _arr[index] = element;
+
+
+        _size++;
     }
 
-    int size()
+
+    void remove(std::size_t index)
+    {
+
+
+        _size--;
+    }
+
+
+    std::size_t size()
     {
         return _size;
     }

@@ -17,16 +17,17 @@ template <class T, std::size_t BLOCK>
 class BArray
 {
 private:
-    int _size;
+    std::size_t _size;
+    std::size_t _max_idx;
     T* _arr;
 
-    void relocate(int newsize, int index)
+    void relocate(std::size_t newsize, std::size_t index)
     {
         T* tmp = new T[newsize];
 
         if (_arr != nullptr)
         {
-            for (int i = 0; i < _size; i++)
+            for (std::size_t i = 0; i < _size; i++)
             {
                 if (i<index) tmp[i] = _arr[i];
                 else tmp[i + 1] = _arr[i];
@@ -37,11 +38,22 @@ private:
         _size = newsize;
     }
 
+    void add(std::size_t index, const T &element)
+    {
+        if (_arr == nullptr || _size <= index)
+            relocate(((index/BLOCK) + 1) * BLOCK, index);
+        _arr[index] = element;
+
+        if(index+1 > _max_idx) _max_idx = index + 1;
+    }
+
+
 public:
     BArray()
     {
         _arr = nullptr;
         _size = 0;
+        _max_idx = 0;
     }
 
     ~BArray()
@@ -50,26 +62,47 @@ public:
             delete [] _arr;
     }
 
-    T get(int index)
+    T &get(std::size_t index) const
     {
         return _arr[index];
     }
 
-    void add(int index, T element)
+    void add(const T &val)
     {
-        if (_arr == nullptr || _size <= index)
-            relocate(((index/BLOCK) + 1) * BLOCK, index);
-        _arr[index] = element;
+        this->add(_max_idx, val);
     }
 
-    void set(int index, T element)
+    void insert(std::size_t index, const T &val)
     {
-        _arr[index] = element;
+        if(index >= _max_idx)
+            add(index, val);
+        else
+        {
+            add(_max_idx, val);   // Выделяем место для нового элемента
+            for(std::size_t i=(_max_idx - 1); i>index ; i--)
+            {
+                _arr[i] = _arr[i-1];
+            }
+            _arr[index] = val;
+        }
     }
 
-    int size()
+    void remove(std::size_t index)
     {
-        return _size;
+
+
+        _max_idx--;
+    }
+
+    void set(std::size_t index, const T &element)
+    {
+        _arr[index] = element;
+        if(index > _max_idx) _max_idx = index;
+    }
+
+    std::size_t size()
+    {
+        return _max_idx;
     }
 
 };
