@@ -22,19 +22,23 @@ private:
 	ListItem<T>* _next;
 
 public:
-	ListItem(T item) {
-		_item = item;
-        _next = nullptr;
+    ListItem(T item) : _item(item), _next(nullptr)
+    {
+//		_item = item;
+//        _next = nullptr;
 	}
 
-	T get() {
+    T &get() {
 		return _item;
 	}
 
-	void setNext(ListItem<T>* item) {
+    void setNext(ListItem<T>* item)
+    {
 		_next = item;
 	}
-	ListItem<T>* getNext() {
+
+    ListItem<T>* getNext()
+    {
 		return _next;
 	}
 };
@@ -44,7 +48,8 @@ public:
 template<class T> class OList
 {
 private:
-	ListItem<T>* _head;
+    int _size;
+    ListItem<T>* _head;
 	ListItem<T>* _tail;
 
 public:
@@ -52,7 +57,7 @@ public:
 	{
         _head = nullptr;
         _tail = nullptr;
-
+        _size = 0;
     }
 
 	~OList()
@@ -71,7 +76,7 @@ public:
 		return _head;
 	}
 
-    void add(T item)
+    ListItem<T>* add(T item)
     {
 		ListItem<T>* li = new ListItem<T>(item);
         if (_head == nullptr)
@@ -84,20 +89,44 @@ public:
 			_tail->setNext(li);
 			_tail = li;
 		}
+        _size++;
+        return li;
 	}
 
-    void insert(ListItem<T>* bi, T item)
+    ListItem<T>* push_front(T item)
     {
         ListItem<T>* li = new ListItem<T>(item);
-        if(bi == _head)
+        if (_head == nullptr)
+        {
+            _head = li;
+            _tail = li;
+        }
+        else
         {
             li->setNext(_head);
             _head = li;
         }
-        else
-        {
+        _size++;
+        return li;
+    }
 
+    T pop_front()
+    {
+        T retval;
+        if(_head != nullptr)
+        {
+            retval = _head->get();
+            ListItem<T> *li = _head;
+            _head = _head->getNext();
+            delete li;
+            _size--;
         }
+        return retval;
+    }
+
+    int size()
+    {
+        return _size;
     }
 
 };

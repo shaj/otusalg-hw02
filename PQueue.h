@@ -15,6 +15,8 @@ while (li != NULL)
 
 #pragma once
 
+#include <iostream>
+
 #include "OList.h"
 
 template<class T>
@@ -25,6 +27,10 @@ private:
     OList<T> _list;
 
 public:
+    PQueueItem() : _priority(0)
+    {
+    }
+
     PQueueItem(int p) : _priority(p)
     {
 	}
@@ -34,14 +40,15 @@ public:
         return _priority;
 	}
 
-    OList<T> &getList() const
+    OList<T> &getList()
     {
-        return *_list;
+        return _list;
 	}
 };
 
 
-template<class T> class PQueue
+template<class T>
+class PQueue
 {
 private:
     OList<PQueueItem<T>> _list;
@@ -63,24 +70,24 @@ public:
         auto pl = _list.head();
         if(pl == nullptr)
         { // Пустая очередь
-            _list.add(PQueue(priority));
-            _list.head()->getList().add(item);
+            pl = _list.add(PQueueItem<T>(priority));
+            pl->get().getList().add(item);
         }
         else
         {
             if(pl->get().getPriority() > priority)
             { // Приоритет первого элемента больше вставляемого
                 // Вставка очереди перед первым элементом
-                pl->push_front(PQueue(priority));
-                pl->getList().add(item);
+                pl = _list.push_front(PQueueItem<T>(priority));
+                pl->get().getList().add(item);
             }
             else
             { // Поиск места среди приоритетов
-                auto pln = pl->next();
+                auto pln = pl->getNext();
                 if(pln == nullptr)
                 {
-                    pl->add(PQueue(priority));
-                    pl->head()->getList().add(item);
+                    pl = _list.add(PQueueItem<T>(priority));
+                    pl->get().getList().add(item);
                 }
                 else
                 {
@@ -88,24 +95,26 @@ public:
                     {
                         if(pln == nullptr)
                         {
-                            pl->add(PQueue(priority));
-                            pl->head()->getList().add(item);
+                            pl = _list.add(PQueueItem<T>(priority));
+                            pl->get().getList().add(item);
                             break;
                         }
                         else if(pln->get().getPriority() == priority)
                         { // Приоритет очередного списка равен вставляемому
-                            pln->get().getList()->add(item);
+                            pln->get().getList().add(item);
                             break;
                         }
                         else if(pln->get().getPriority() > priority)
                         {
                             // Вставка очереди перед текущим списком
-                            pl->add(PQueue(priority));
-                            pl->head()->getList().add(item);
+                            auto nit = new ListItem<PQueueItem<T>>(PQueueItem<T>(priority));
+                            nit->setNext(pl->getNext());
+                            pl->setNext(nit);
+                            nit->get().getList().add(item);
                             break;
                         }
                         pl = pln;
-                        pln = pl->next();
+                        pln = pl->getNext();
                     }
                 }
             }
@@ -113,15 +122,35 @@ public:
     }
 
 
+    void debugPrint()
+    {
+        auto li = _list.head();
+        std::cout << "\n";
+        while(li != nullptr)
+        {
+            std::cout << "Priority: " << li->get().getPriority() << "\n";
+            auto it = li->get().getList().head();
+            while(it != nullptr)
+            {
+                std::cout << "   item: " << it->get() << "\n";
+                it = it->getNext();
+            }
+            li = li->getNext();
+        }
+        std::cout << std::endl;
+    }
 
 
     T dequeue()
     {
-        T retval = _list.head()->pop();
-        if(_list.head()->getList().size() == 0)
+        T retval;
+        if(_list.head() == nullptr) return -1;  // Здесь, по видимому, должно быть исключение...
+        retval = _list.head()->get().getList().pop_front();
+        if(_list.head()->get().getList().size() == 0)
         {
-            _list.pop();
+            _list.pop_front();
         }
+        return  retval;
     }
 };
 
