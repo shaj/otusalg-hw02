@@ -1,16 +1,25 @@
 /*********************************************************
 Пример использования:
 
-OList<int>* a = new OList<int>();
-for (int i = 0; i < 10; i++)
-	a->add(i*i);
+    PQueue<int> pq;
+    pq.enqueue(20, 20);
+    pq.enqueue(3, 3);
+    pq.enqueue(2, 2);
+    pq.enqueue(1, 1);
+    pq.enqueue(10, 10);
+    pq.enqueue(20, 20);
+    pq.enqueue(30, 30);
+    pq.enqueue(5, 5);
+    pq.enqueue(20, 25);
+    pq.enqueue(20, 24);
+    pq.enqueue(20, 23);
+    pq.enqueue(20, 22);
 
-ListItem<int>* li = a->head();
-while (li != NULL)
-{
-	cout << li->get() << "\n";
-	li = li->getNext();
-}
+    while(pq.size() > 0)
+    {
+        std::cout << "Dequeue: " << pq.dequeue() << std::endl;
+    }
+
 *********************************************************/
 
 #pragma once

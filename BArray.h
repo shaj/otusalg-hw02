@@ -12,6 +12,7 @@ for (int i = 0; i < 10; i++)
 #pragma once
 
 #include <cstddef>
+#include <stdexcept>
 
 template <class T, std::size_t BLOCK>
 class BArray
@@ -19,6 +20,7 @@ class BArray
 private:
     std::size_t _size;
     std::size_t _max_idx;
+    bool _empty;
     T* _arr;
 
     void relocate(std::size_t newsize, std::size_t index)
@@ -44,7 +46,8 @@ private:
             relocate(((index/BLOCK) + 1) * BLOCK, index);
         _arr[index] = element;
 
-        if(index+1 > _max_idx) _max_idx = index + 1;
+        if(index > _max_idx) _max_idx = index;
+        _empty = false;
     }
 
 
@@ -54,6 +57,7 @@ public:
         _arr = nullptr;
         _size = 0;
         _max_idx = 0;
+        _empty = true;
     }
 
     ~BArray()
@@ -69,7 +73,7 @@ public:
 
     void add(const T &val)
     {
-        this->add(_max_idx, val);
+        add(_max_idx+1, val);
     }
 
     void insert(std::size_t index, const T &val)
@@ -89,9 +93,11 @@ public:
 
     void remove(std::size_t index)
     {
-
-
-        _max_idx--;
+        throw std::runtime_error("BArray::remove() not implemented yet");
+        if(_max_idx == 0)
+            _empty = true;
+        else
+            _max_idx--;
     }
 
     void set(std::size_t index, const T &element)
@@ -100,9 +106,10 @@ public:
         if(index > _max_idx) _max_idx = index;
     }
 
-    std::size_t size()
+    std::size_t size() const
     {
-        return _max_idx;
+        if(_empty) return 0;
+        else return _max_idx + 1;
     }
 
 };
