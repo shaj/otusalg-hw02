@@ -30,64 +30,64 @@ struct measure
 
 int main()
 {
-//    long long int retval = 0;
+    long long int retval = 0;
 
-//    for(int j=0; j<10; j++)
-//    {
-//        DArray<int> *a = new DArray<int>();
-//        std::cout << "Fill DArray: " << measure<>::execution([&]()
-//            {
-//                for (int i=0; i<TEST_SIZE; i++)
-//                    a->add(i, i*i);
-//            }
-//        ) << "ms\n";
-//        std::cout << "Read DArray: " << measure<>::execution([&]()
-//            {
-//                for (int i=0; i<TEST_SIZE; i++)
-//                    retval += a->get(i);
-//            }
-//        ) << "ms\n";
-//        std::cout << std::endl;
-//        delete a;
-//    }
-//    std::cout << "retval = " << retval << std::endl;
-
-
-
-//    for(int j=0; j<10; j++)
-//    {
-//        BArray<int, 100> *a = new BArray<int, 100>();
-//        std::cout << "Fill BArray: " << measure<>::execution([&]()
-//            {
-//                for (int i=0; i<TEST_SIZE; i++)
-//                    a->add(i*i);
-//            }
-//        ) << "ms\n";
-//        std::cout << "Read BArray: " << measure<>::execution([&]()
-//            {
-//                for (std::size_t i=0; i<TEST_SIZE; i++)
-//                    retval += a->get(i);
-//            }
-//        ) << "ms\n";
-//        std::cout << std::endl;
-//        delete a;
-//    }
-//    std::cout << "retval = " << retval << std::endl;
+    for(int j=0; j<10; j++)
+    {
+        DArray<int> *a = new DArray<int>();
+        std::cout << "Fill DArray: " << measure<>::execution([&]()
+            {
+                for (int i=0; i<TEST_SIZE; i++)
+                    a->add(i, i*i);
+            }
+        ) << "ms\n";
+        std::cout << "Read DArray: " << measure<>::execution([&]()
+            {
+                for (int i=0; i<TEST_SIZE; i++)
+                    retval += a->get(i);
+            }
+        ) << "ms\n";
+        std::cout << std::endl;
+        delete a;
+    }
+    std::cout << "retval = " << retval << std::endl;
 
 
-//    {
-//        BArray<int, 5> a;
-//        for(int i=0; i<22; i++)
-//        {
-//            a.insert(0, i);
-//        }
-//        std::cout << "BArray size: " << a.size() << std::endl;
-//        for(std::size_t i=0; i<a.size(); i++)
-//        {
-//            std::cout << a.get(i) << "  ";
-//        }
-//        std::cout << std::endl;
-//    }
+
+    for(int j=0; j<10; j++)
+    {
+        BArray<int, 100> *a = new BArray<int, 100>();
+        std::cout << "Fill BArray: " << measure<>::execution([&]()
+            {
+                for (int i=0; i<TEST_SIZE; i++)
+                    a->add(i*i);
+            }
+        ) << "ms\n";
+        std::cout << "Read BArray: " << measure<>::execution([&]()
+            {
+                for (std::size_t i=0; i<TEST_SIZE; i++)
+                    retval += a->get(i);
+            }
+        ) << "ms\n";
+        std::cout << std::endl;
+        delete a;
+    }
+    std::cout << "retval = " << retval << std::endl;
+
+
+    {
+        BArray<int, 5> a;
+        for(int i=0; i<22; i++)
+        {
+            a.insert(0, i);
+        }
+        std::cout << "BArray size: " << a.size() << std::endl;
+        for(std::size_t i=0; i<a.size(); i++)
+        {
+            std::cout << a.get(i) << "  ";
+        }
+        std::cout << std::endl;
+    }
 
     {
         IArray<int, 10, 10> a;
@@ -118,30 +118,30 @@ int main()
 
 
 
-//    PQueue<int> pq;
-//    pq.enqueue(20, 20);
-//    pq.enqueue(3, 3);
-//    pq.enqueue(2, 2);
-//    pq.enqueue(1, 1);
-//    pq.enqueue(10, 10);
-//    pq.enqueue(20, 20);
-//    pq.enqueue(30, 30);
-//    pq.enqueue(5, 5);
+    PQueue<int> pq;
+    pq.enqueue(20, 20);
+    pq.enqueue(3, 3);
+    pq.enqueue(2, 2);
+    pq.enqueue(1, 1);
+    pq.enqueue(10, 10);
+    pq.enqueue(20, 20);
+    pq.enqueue(30, 30);
+    pq.enqueue(5, 5);
 
 
-//    pq.enqueue(20, 25);
-//    pq.enqueue(20, 24);
-//    pq.enqueue(20, 23);
-//    pq.enqueue(20, 22);
+    pq.enqueue(20, 25);
+    pq.enqueue(20, 24);
+    pq.enqueue(20, 23);
+    pq.enqueue(20, 22);
 
 
-//    pq.debugPrint();
+    pq.debugPrint();
 
-//    while(pq.size() > 0)
-//    {
-//        std::cout << "Dequeue: " << pq.dequeue() << std::endl;
-//    }
-//    std::cout << std::endl;
+    while(pq.size() > 0)
+    {
+        std::cout << "Dequeue: " << pq.dequeue() << std::endl;
+    }
+    std::cout << std::endl;
 
     return 0;
 }
