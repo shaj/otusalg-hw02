@@ -79,6 +79,7 @@ int main()
         BArray<int, 5> a;
         for(int i=0; i<22; i++)
         {
+            std::cout << "a.size() " << a.size() << "\n";
             a.insert(0, i);
         }
         std::cout << "BArray size: " << a.size() << std::endl;

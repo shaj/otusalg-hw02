@@ -80,7 +80,7 @@ public:
 
     void insert(std::size_t index, const T &val)
     {
-        if(index > _max_idx)
+        if((index > _max_idx) || _empty)
             add(index, val);
         else
         {
@@ -96,11 +96,14 @@ public:
     void remove(std::size_t index)
     {
 //        throw std::runtime_error("BArray::remove() not implemented yet");
-        if(index > _max_idx)
+        if((index > _max_idx) || _empty)
             throw std::range_error("Out of index in BArray remove");
         if(index == _max_idx)
         {
-            _max_idx--;
+            if(_max_idx == 0)
+                _empty = true;
+            else
+                _max_idx--;
         }
         else
         {
