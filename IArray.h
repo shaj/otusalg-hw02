@@ -24,7 +24,7 @@ class IArray
 {
 private:
 
-    static constexpr auto _opt_column = BLKSIZE * 0.6;
+    static constexpr auto _opt_column = BLKSIZE * 0.5;
 
     std::size_t _size;
     BArray<BArray<T, BLKSIZE>*, BLKCNT> _data;
@@ -46,7 +46,7 @@ private:
             sum += _data.get(i)->size();
             if((sum - 1) >= idx)
             {
-                c = idx - ((sum - 1) - _data.get(i)->size());
+                c = idx - ((sum - 1) - (_data.get(i)->size() - 1));
                 break;
             }
             r++;

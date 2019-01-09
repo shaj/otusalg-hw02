@@ -90,16 +90,14 @@ int main()
 //    }
 
     {
-        IArray<int, 5, 5> a;
-        for(int i=0; i<30; i++)
+        IArray<int, 10, 10> a;
+        for(int i=0; i<125; i++)
         {
             a.add(i);
         }
         std::cout << "IArray size: " << a.size() << std::endl;
         a.debug_print();
         std::cout << std::endl;
-
-        std::cout << "\n\n" << a.get(8) << "\n";
 
         for(std::size_t i=0; i<a.size(); i++)
         {

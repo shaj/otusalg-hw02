@@ -73,7 +73,9 @@ public:
 
     void add(const T &val)
     {
-        add(_max_idx+1, val);
+        if(_empty) add(0, val);
+        else add(_max_idx+1, val);
+
     }
 
     void insert(std::size_t index, const T &val)
