@@ -30,7 +30,7 @@ struct measure
 
 int main()
 {
-    long long int retval = 0;
+//    long long int retval = 0;
 
 //    for(int j=0; j<10; j++)
 //    {
@@ -95,9 +95,18 @@ int main()
         {
             a.add(i);
         }
-        std::cout << "IArray size: " << a.size() << std::endl;
+
         a.debug_print();
-        std::cout << std::endl;
+
+        for(int i=0; i<13; i++)
+            a.insert(23, i);
+
+        a.remove(38);
+
+        for(int i=0; i<12; i++)
+            a.remove(44);
+
+        a.debug_print();
 
         for(std::size_t i=0; i<a.size(); i++)
         {

@@ -25,9 +25,10 @@ class IArray
 private:
 
     static constexpr auto _opt_column = BLKSIZE * 0.5;
+    static constexpr auto _blksize = BLKSIZE + 1;
 
     std::size_t _size;
-    BArray<BArray<T, BLKSIZE>*, BLKCNT> _data;
+    BArray<BArray<T, _blksize>*, BLKCNT> _data;
 
 
     std::tuple<std::size_t, std::size_t> get_cell(std::size_t idx) const
@@ -91,7 +92,7 @@ public:
     {
         if(_size == 0)
         {
-            _data.add(new BArray<T, BLKSIZE>);
+            _data.add(new BArray<T, _blksize>);
             _data.get(0)->add(val);
         }
         else
@@ -105,7 +106,7 @@ public:
             }
             else
             {
-                _data.add(new BArray<T, BLKSIZE>);
+                _data.add(new BArray<T, _blksize>);
                 _data.get(r + 1)->add(val);
             }
         }
@@ -135,14 +136,39 @@ public:
 
     void insert(std::size_t index, const T &val)
     {
-        throw std::runtime_error("IArray::insert() not implemented yet");
+        std::size_t r;
+        std::size_t c;
+        std::tie(r, c) = get_cell(index);
+        if(_data.get(r)->size() < BLKSIZE)
+        {
+            _data.get(r)->insert(c, val);
+        }
+        else
+        {
+            _data.insert(r+1, new BArray<T, _blksize>);
+            _data.get(r)->insert(c, val);
+            std::size_t idx_offset = _data.get(r)->size() - (_data.get(r)->size() / 2);
+            for(std::size_t i=idx_offset; i<_data.get(r)->size(); i++)
+            {
+                _data.get(r+1)->add(_data.get(r)->get(i));
+            }
+            for(std::size_t i=_data.get(r)->size()-1; i>=idx_offset; i--)
+            {
+                _data.get(r)->remove(i);
+            }
+        }
         _size++;
     }
 
 
     void remove(std::size_t index)
     {
-        throw std::runtime_error("IArray::remove() not implemented yet");
+        std::size_t r;
+        std::size_t c;
+        std::tie(r, c) = get_cell(index);
+        _data.get(r)->remove(c);
+        if(_data.get(r)->size() == 0)
+            _data.remove(r);
         _size--;
     }
 

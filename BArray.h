@@ -80,12 +80,12 @@ public:
 
     void insert(std::size_t index, const T &val)
     {
-        if(index >= _max_idx)
+        if(index > _max_idx)
             add(index, val);
         else
         {
-            add(_max_idx, val);   // Выделяем место для нового элемента
-            for(std::size_t i=(_max_idx - 1); i>index ; i--)
+            add(_max_idx + 1, val);   // Выделяем место для нового элемента
+            for(std::size_t i=_max_idx; i>index ; i--)
             {
                 _arr[i] = _arr[i-1];
             }
@@ -95,11 +95,19 @@ public:
 
     void remove(std::size_t index)
     {
-        throw std::runtime_error("BArray::remove() not implemented yet");
-        if(_max_idx == 0)
-            _empty = true;
-        else
+//        throw std::runtime_error("BArray::remove() not implemented yet");
+        if(index > _max_idx)
+            throw std::range_error("Out of index in BArray remove");
+        if(index == _max_idx)
+        {
             _max_idx--;
+        }
+        else
+        {
+            for(std::size_t i=index; i<_max_idx; i++)
+                _arr[i] = _arr[i+1];
+            _max_idx--;
+        }
     }
 
     void set(std::size_t index, const T &element)
